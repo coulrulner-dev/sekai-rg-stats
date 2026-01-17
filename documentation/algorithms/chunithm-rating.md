@@ -12,7 +12,7 @@ Rating is an algorithm used in [CHUNITHM](https://chunithm.sega.com/). This algo
 !!! info
 	The internal chart level is not displayed in game. Charts have a second component -- a decimal -- that changes how much rating they give.
 
-	For example, a chart marked as level 12 may have an internal level of 12.0->12.5.
+	For example, a chart marked as level 12 may have an internal level of 12.0->12.4.
 	
 	Similarly, a chart marked as level 12+ may have an internal level of 12.5->12.9.
 
