@@ -2,12 +2,12 @@ import { ThrowIf } from "../util/throw-if";
 
 /**
  * Calculates the rating for a proseka score using the 39S rating system.
- * Judgement weights are accurate to ranked match standards.
+ * Judgement weights: Perfect = 3, Great = 2, Good = 1, Bad = 0, Miss = 0
  *
  * @param perfectCount - The number of perfects the user got. Worth 3 points each.
  * @param greatCount - The number of greats the user got. Worth 2 points each.
  * @param goodCount - The number of goods the user got. Worth 1 point each.
- * @param badCount - The number of bads the user got. Worth 0.5 points each.
+ * @param badCount - The number of bads the user got. Worth 0 points.
  * @param missCount - The number of misses the user got. Worth 0 points.
  * @param internalChartLevel - The internal chart level (constant).
  * @param maxCombo - The maximum combo achievable on the chart.
@@ -30,7 +30,7 @@ export function calculate(
 	ThrowIf.negative(maxCombo, "Max combo cannot be negative.", { maxCombo });
 	ThrowIf.negative(internalChartLevel, "Chart level cannot be negative.", { internalChartLevel });
 
-	const rawScore = perfectCount * 3 + greatCount * 2 + goodCount + badCount * 0.5;
+	const rawScore = perfectCount * 3 + greatCount * 2 + goodCount;
 	const maxScore = maxCombo * 3;
 
 	ThrowIf(rawScore > maxScore, "Score cannot be greater than maximum possible score.", {
@@ -40,13 +40,13 @@ export function calculate(
 
 	const percent = (rawScore / maxScore) * 100;
 
-	// 39S Rating System:
+	// 39S Rating System (Linear):
 	// 100%   -> constant + 4
 	// 99.5%  -> constant + 3
 	// 99%    -> constant + 2
 	// 98%    -> constant + 1
 	// 97%    -> constant + 0
-	// Every -3% below 97% is -2 rating
+	// Every -3% below 97% is -2 rating (linear)
 	// 50% always equals 0
 
 	let rating: number;
@@ -54,19 +54,23 @@ export function calculate(
 	if (percent >= 100) {
 		rating = internalChartLevel + 4;
 	} else if (percent >= 99.5) {
-		rating = internalChartLevel + 3 + (percent - 99.5) * 2;
+		// Linear from +3 to +4 over 0.5%
+		rating = internalChartLevel + 3 + ((percent - 99.5) / 0.5) * 1;
 	} else if (percent >= 99) {
-		rating = internalChartLevel + 2 + (percent - 99) * 2;
+		// Linear from +2 to +3 over 0.5%
+		rating = internalChartLevel + 2 + ((percent - 99) / 0.5) * 1;
 	} else if (percent >= 98) {
-		rating = internalChartLevel + 1 + (percent - 98);
+		// Linear from +1 to +2 over 1%
+		rating = internalChartLevel + 1 + ((percent - 98) / 1) * 1;
 	} else if (percent >= 97) {
-		rating = internalChartLevel + (percent - 97);
+		// Linear from +0 to +1 over 1%
+		rating = internalChartLevel + ((percent - 97) / 1) * 1;
 	} else if (percent >= 50) {
-		// From 97% to 50% is a 47% range
-		// Rating goes from constant to 0
-		// Every -3% is -2 rating, so -47% is roughly -(47/3)*2 = -31.33
-		const percentBelow97 = 97 - percent;
-		rating = internalChartLevel - (percentBelow97 / 3) * 2;
+		// Linear from constant to 0 over 47%
+		// At 97%: rating = constant
+		// At 50%: rating = 0
+		// Slope: -constant/47
+		rating = internalChartLevel * ((percent - 50) / 47);
 	} else {
 		rating = 0;
 	}

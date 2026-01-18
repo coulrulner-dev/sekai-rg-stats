@@ -30,7 +30,7 @@ Calculates rating on a given chart.
 /**
  * Calculates the rating for a proseka score.
  * System developed by coul, not officially by SEGA.
- * Judgement weights are accurate to ranked match standards, with the exception of bad counts being worth 0.5 points instead of 0.
+ * Judgement weights are accurate to ranked match standards.
  *
  * @param perfectCount - The number of perfects the user got. Worth 3 points each.
  * @param greatCount - The number of greats the user got. Worth 2 points each.
