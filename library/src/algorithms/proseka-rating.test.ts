@@ -1,4 +1,3 @@
-/* eslint-disable curly */
 import t from "tap";
 import { calculate } from "./proseka-rating";
 
@@ -28,7 +27,7 @@ function expectedRating(percent: number) {
 	return 0;
 }
 
-t.test("Proseka Rating Tests (39S System - Linear, Weighted)", (t) => {
+t.test("Proseka Rating Tests", (t) => {
 	const percents = [100, 99.5, 99, 98, 97, 50];
 
 	for (const p of percents) {
@@ -53,7 +52,7 @@ t.test("Proseka Rating Tests (39S System - Linear, Weighted)", (t) => {
 	t.end();
 });
 
-t.test("Bad == Miss (0 points)", (t) => {
+t.test("Bad == Miss Point Validation", (t) => {
 	const a = calculate(295, 0, 0, 5, 0, LEVEL, MAX);
 	const b = calculate(295, 0, 0, 0, 5, LEVEL, MAX);
 

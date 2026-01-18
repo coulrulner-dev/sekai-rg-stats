@@ -63,14 +63,23 @@ export function calculate(
 		// Linear from +1 to +2 over 1%
 		rating = internalChartLevel + 1 + ((percent - 98) / 1) * 1;
 	} else if (percent >= 97) {
-		// Linear from +0 to +1 over 1%
+		// Linear from 0 to +1 over 1%
 		rating = internalChartLevel + ((percent - 97) / 1) * 1;
 	} else if (percent >= 50) {
-		// Linear from constant to 0 over 47%
-		// At 97%: rating = constant
-		// At 50%: rating = 0
-		// Slope: -constant/47
-		rating = internalChartLevel * ((percent - 50) / 47);
+		// Every -3% below 97% is -2 rating
+		const stepsBelow97 = Math.floor((97 - percent) / 3);
+		const remainderPercent = (97 - percent) % 3;
+
+		// Each 3% = -2 rating
+		rating = internalChartLevel - stepsBelow97 * 2;
+
+		// Linear interpolation for remainder
+		rating -= (remainderPercent / 3) * 2;
+
+		// Clamp to 0 if below 50%
+		if (rating < 0) {
+			rating = 0;
+		}
 	} else {
 		rating = 0;
 	}

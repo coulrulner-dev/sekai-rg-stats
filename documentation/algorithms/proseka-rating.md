@@ -7,8 +7,8 @@ import { PROSEKARating } from "rg-stats"
 
 ## About
 
-This is an unofficial, community made rating system by coul (coulrulner1) for the game Project Sekai: Colorful Stage! based on an EXscore system. It is used in the sekaitachi project as a way to provide better player ranking metrics.
-The judgements use the points ranked matches award per judgement, with the exception of bads now providing 0.5 points instead of 0.
+This is an unofficial, community made rating system by the 39S community for the game Project Sekai: Colorful Stage! based on an EXscore system. It is used in the sekaitachi project as a way to provide better player ranking metrics.
+The judgements use the points ranked matches award per judgement.
 
 !!! info
 	The internal chart level is not displayed in game. Charts have a community rating -- a decimal -- that changes how much rating they give.
