@@ -23,16 +23,16 @@ function expectedRating(percent: number) {
 	if (percent >= 99) return LEVEL + 2 + (percent - 99) / 0.5;
 	if (percent >= 98) return LEVEL + 1 + (percent - 98) / 1;
 	if (percent >= 97) return LEVEL + (percent - 97) / 1;
-	if (percent >= 50) {
+	if (percent > 50) {
 		const drop = 97 - percent;
 		const ratingLoss = drop * (2 / 3);
 		return Math.max(0, LEVEL - ratingLoss);
 	}
-	return 0;
+	if (percent <= 50) return 0; else return -1;
 }
 
 t.test("Proseka Rating Tests", (t) => {
-	const percents = [100, 99.5, 99, 98, 97, 50];
+	const percents = [100, 99.5, 99, 98, 97, 50, 49];
 
 	for (const p of percents) {
 		const score = Math.round(MAX_SCORE * (p / 100));

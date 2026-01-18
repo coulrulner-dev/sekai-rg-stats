@@ -49,7 +49,7 @@ export function calculate(
 	// Every -3% below 97% is -2 rating (linear)
 	// 50% always equals 0
 
-	let rating: number;
+	let rating: number = 0;
 
 	if (percent >= 100) {
 		rating = internalChartLevel + 4;
@@ -65,21 +65,11 @@ export function calculate(
 	} else if (percent >= 97) {
 		// Linear from 0 to +1 over 1%
 		rating = internalChartLevel + ((percent - 97) / 1) * 1;
-	} else if (percent >= 50) {
+	} else if (percent > 50) {
 		// Every -3% below 97% is -2 rating
-		const stepsBelow97 = Math.floor((97 - percent) / 3);
-		const remainderPercent = (97 - percent) % 3;
-
-		// Each 3% = -2 rating
-		rating = internalChartLevel - stepsBelow97 * 2;
-
-		// Linear interpolation for remainder
-		rating -= (remainderPercent / 3) * 2;
-
-		// Clamp to 0 if below 50%
-		if (rating < 0) {
-			rating = 0;
-		}
+		rating = internalChartLevel - (97 - percent) * (2 / 3);
+		// Force to 0 if negative
+		rating = Math.max(0, rating);
 	} else {
 		rating = 0;
 	}
